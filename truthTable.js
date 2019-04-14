@@ -2,17 +2,19 @@ const fs = require("fs");
 const gates = require("./gates");
 let currentYValue = 1;
 
+// go through every possible value for a given
+// gate string
 function calculateTruthtables(input) {
   let currentValue = 0;
   const gateMap = createGateMap(gates);
-  const numInputs = countInputs(input);
+  const numInputs = countNumInputs(input);
   const maxValue = parseInt("1".repeat(numInputs), 2);
   const expected0Values = [];
   const expected1Values = [];
 
   for (let i = 0; i <= maxValue; i++) {
     const values = createMapValues(currentValue, numInputs);
-    const strippedInput = stripNumbers(input);
+    const strippedInput = stripLeadingInputValues(input);
     const parsedInput = parseInput(strippedInput);
     const tokens = createTokens(parsedInput);
     calculateValues({ values, tokens, gateMap });
@@ -33,17 +35,19 @@ function calculateTruthtables(input) {
   writeResults(expected0Values, expected1Values);
 }
 
+// create a map to lookup the operator given the symbol
+// of the gate
 function createGateMap(gates) {
   const gateMap = new Map();
   gates.forEach(gate => gateMap.set(gate.symbol, gate.operator));
   return gateMap;
 }
 
-function countInputs(input) {
+function countNumInputs(input) {
   return input.replace(/[^0-1]/g, "").length;
 }
 
-function stripNumbers(input) {
+function stripLeadingInputValues(input) {
   return input.replace(/[0-1]/g, "");
 }
 
@@ -62,6 +66,8 @@ function createPaddedBinary(value, numInputs) {
   return value.toString(2).padStart(numInputs, 0);
 }
 
+// create a map of the intial values for a given 
+// x => binaryRepresentation of a given integer value[index]
 function createMapValues(value, numInputs) {
   const binaryValues = createPaddedBinary(value, numInputs);
   const map = new Map();
@@ -71,6 +77,7 @@ function createMapValues(value, numInputs) {
   return map;
 }
 
+// evalutate the tokens and store the y values into the values map
 function calculateValues({ values, tokens, gateMap }) {
   tokens.forEach(token => {
     if (token.operands.length === 1) {
