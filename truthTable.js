@@ -66,7 +66,7 @@ function createPaddedBinary(value, numInputs) {
   return value.toString(2).padStart(numInputs, 0);
 }
 
-// create a map of the intial values for a given 
+// create a map of the intial values for a given
 // x => binaryRepresentation of a given integer value[index]
 function createMapValues(value, numInputs) {
   const binaryValues = createPaddedBinary(value, numInputs);
@@ -123,6 +123,21 @@ function writeResults(expected0Values, expected1Values) {
       return console.log("Error writting 1 expected file");
     }
     console.log("Successfully wrote expected1results.txt");
+  });
+
+  let circuit;
+
+  if (expected0Values.length === 0) {
+    circuit = `circuitData = '${expected1Values[0]}';`;
+  } else {
+    circuit = `circuitData = '${expected0Values[0]}';`;
+  }
+
+  fs.writeFile("./circuit.js", circuit, function(err) {
+    if (err) {
+      return console.log("Error writting circuit");
+    }
+    console.log("Successfully wrote circuit.js");
   });
 }
 
