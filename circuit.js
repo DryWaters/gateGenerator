@@ -1,1 +1,1 @@
-circuitData = '00Ox#xx';
+circuitData = '00NxOxx#xxAy#yy';
