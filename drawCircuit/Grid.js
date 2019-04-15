@@ -39,7 +39,7 @@ export default class Grid {
     // choose the row that has the longest row to add
     // figure out which gate to create
     // value needs to be generated depending on gate type
-    console.log(this.gateLookup);
+
     const parsedGate = this.parseGateDefinintion(gateDefinition);
 
     switch (parsedGate.type) {
@@ -107,7 +107,6 @@ export default class Grid {
 
     // const correctRow = findCorrectRow(gate);
 
-    console.log(this.gateLookup);
     // console.log(this.gates);
   };
 
@@ -122,7 +121,7 @@ export default class Grid {
         operands[1] = this.gateLookup.get(operands[1]);
         gate = {
           type: gateDefinition[0],
-          originalName: "y".repeat(this.currentYValue + 1),
+          originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
           value: operands[0].value && operands[1].value,
           operands,
@@ -137,10 +136,9 @@ export default class Grid {
         const operands = gateDefinition.substring(1).split("#");
         operands[0] = this.gateLookup.get(operands[0]);
         operands[1] = this.gateLookup.get(operands[1]);
-        console.log(operands);
         gate = {
           type: gateDefinition[0],
-          originalName: "y".repeat(this.currentYValue + 1),
+          originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
           value: operands[0].value || operands[1].value,
           operands,
@@ -155,7 +153,7 @@ export default class Grid {
         const operand = this.gateLookup.get(gateDefinition.substring(1));
         gate = {
           type: gateDefinition[0],
-          originalName: "y".repeat(this.currentYValue + 1),
+          originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
           value: !operand.value,
           operands: [operand],

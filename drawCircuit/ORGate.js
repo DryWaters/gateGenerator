@@ -21,6 +21,7 @@ export default class ORGate extends CircuitItem {
 
   draw(ctx) {
     // Draw actual gate
+    ctx.strokeStyle = "#000";
     ctx.beginPath();
     ctx.ellipse(
       this.x,

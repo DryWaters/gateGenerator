@@ -8,7 +8,7 @@ drawCircuit();
 function drawCircuit() {
   const circuit = parseGates();
   const grid = new Grid(circuit.inputs.length);
-  // drawGrid(ctx, grid);
+  drawGrid(ctx, grid);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   grid.draw(ctx);
@@ -25,12 +25,9 @@ function addInputs(grid, inputs) {
 }
 
 function addGates(grid, gates) {
-  grid.addGate(gates[0]);
-  grid.addGate(gates[1]);
-  grid.addGate(gates[2]);
-  // gates.forEach(gate => {
-  //   grid.addGate(gate);
-  // });
+  gates.forEach(gate => {
+    grid.addGate(gate);
+  });
 }
 
 function parseGates() {
@@ -58,34 +55,6 @@ function drawGrid(ctx, grid) {
 
   grid.currentCol = 0;
   grid.currentRow = 0;
-}
-
-function drawInputs({ inputs, ctx, grid }) {
-  inputs.forEach((input, index) => {
-    const inputValue = new Input(
-      grid.getX(grid.currentCol),
-      grid.getY(grid.currentRow),
-      "x".repeat(index + 1),
-      input === "0" ? false : true
-    );
-    inputValue.draw(ctx);
-    grid.addGate(inputValue);
-    grid.currentRow++;
-  });
-  grid.currentCol = 0;
-  grid.currentRow = 0;
-}
-
-function drawGates({ gates, ctx, grid }) {
-  grid.currentCol++;
-  const and = new ANDGate(
-    grid.getX(grid.currentCol),
-    grid.getY(grid.currentRow),
-    "y1",
-    "x"
-  );
-  grid.addGate(and);
-  and.draw(ctx);
 }
 
 function drawConnectors({ ctx, grid }) {

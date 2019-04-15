@@ -10,10 +10,16 @@ export default class Input extends CircuitItem {
   }
 
   draw(ctx) {
+    // Draw input 
+    ctx.beginPath();
+    ctx.strokeStyle = "#000";
+    ctx.strokeRect(this.x, this.y, this.width, this.height);
+
+    // Draw label
+    ctx.beginPath();
+    const val = this.value ? 1 : 0;
     ctx.fillStyle = "#000";
     ctx.font = "48px serif";
-    ctx.strokeRect(this.x, this.y, this.width, this.height);
-    const val = this.value ? 1 : 0;
     ctx.fillText(val, this.x + 13, this.y + 40);
 
     // Draw connector endpoints
