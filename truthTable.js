@@ -133,7 +133,7 @@ function writeResults(expected0Values, expected1Values) {
     circuit = `circuitData = '${expected0Values[0]}';`;
   }
 
-  fs.writeFile("./circuit.js", circuit, function(err) {
+  fs.writeFile("./circuitData.js", circuit, function(err) {
     if (err) {
       return console.log("Error writting circuit");
     }

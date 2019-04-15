@@ -1,10 +1,13 @@
 import CircuitItem from "./CircuitItem.js";
 
-const CONNECTOR_SIZE = 4;
-
 export default class ANDGate extends CircuitItem {
-  constructor(x, y, value) {
-    super(x, y, 25, 50, value);
+  constructor(name, value) {
+    super(50, 25, name, value);
+  }
+
+  setLocation(x, y) {
+    this.x = x;
+    this.y = y;
     this.inputLocation = [
       {
         x: x,
@@ -39,7 +42,7 @@ export default class ANDGate extends CircuitItem {
     ctx.arc(
       this.inputLocation[0].x,
       this.inputLocation[0].y,
-      CONNECTOR_SIZE,
+      super.CONNECTOR_SIZE,
       0,
       2 * Math.PI
     );
@@ -57,10 +60,6 @@ export default class ANDGate extends CircuitItem {
     ctx.fill();
     ctx.fillStyle = "#000";
     ctx.font = "24px serif";
-    ctx.fillText(
-      this.value,
-      this.x + 5,
-      this.y + this.height * 2 + 5
-    );
+    ctx.fillText(this.value, this.x + 5, this.y + this.height * 2 + 5);
   }
 }

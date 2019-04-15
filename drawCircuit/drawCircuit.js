@@ -1,19 +1,37 @@
 import ORGate from "./ORGate.js";
-import ANDGate from "./ANDGate.js";
 
-import Input from "./Input.js";
+
 import Grid from "./Grid.js";
 
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 
-const grid = new Grid();
-const circuit = parseGates();
-drawGrid({ ctx, grid });
-drawInputs({ inputs: circuit.inputs, ctx, grid });
-console.log(circuit);
-drawGates({ gates: circuit.gates, ctx, grid });
-drawConnectors({ ctx, grid });
+drawCircuit();
+
+function drawCircuit() {
+  const circuit = parseGates();
+  const grid = new Grid(circuit.inputs.length);
+  drawGrid({ ctx, grid });
+  addInputs(grid, circuit.inputs);
+  addGates(grid, circuit.gates);
+  grid.draw(ctx);
+  // drawInputs({ inputs: circuit.inputs, ctx, grid });
+  // console.log(circuit);
+  // drawGates({ gates: circuit.gates, ctx, grid });
+  // drawConnectors({ ctx, grid });
+}
+
+function addInputs(grid, inputs) {
+  inputs.forEach(value => {
+    grid.addInput(value);
+  });
+}
+
+function addGates(grid, gates) {
+  gates.forEach(gate => {
+    grid.addGate(gate);
+  });
+}
 
 function parseGates() {
   const circuit = {};
@@ -43,11 +61,12 @@ function drawGrid({ ctx, grid }) {
 }
 
 function drawInputs({ inputs, ctx, grid }) {
-  inputs.forEach(input => {
+  inputs.forEach((input, index) => {
     const inputValue = new Input(
       grid.getX(grid.currentCol),
       grid.getY(grid.currentRow),
-      input
+      "x".repeat(index + 1),
+      input === "0" ? false : true
     );
     inputValue.draw(ctx);
     grid.addGate(inputValue);
@@ -70,7 +89,6 @@ function drawGates({ gates, ctx, grid }) {
 }
 
 function drawConnectors({ ctx, grid }) {
-  console.log(grid.gates);
   if (grid.gates[0].gate.value === "0") {
     ctx.strokeStyle = "#000";
   } else {
