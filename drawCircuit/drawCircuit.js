@@ -28,9 +28,10 @@ function addInputs(grid, inputs) {
 }
 
 function addGates(grid, gates) {
-  gates.forEach(gate => {
-    grid.addGate(gate);
-  });
+  grid.addGate(gates[0])
+  // gates.forEach(gate => {
+  //   grid.addGate(gate);
+  // });
 }
 
 function parseGates() {
