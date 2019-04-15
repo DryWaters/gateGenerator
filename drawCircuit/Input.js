@@ -4,8 +4,8 @@ export default class Input extends CircuitItem {
   constructor(x, y, name, value) {
     super(x, y, 50, 50, name, value);
     this.outputLocation = {
-      x: x + this.width,
-      y: y + this.height / 2
+      x: this.x + this.width,
+      y: this.y + this.height / 2
     };
   }
 

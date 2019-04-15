@@ -1,6 +1,3 @@
-import ORGate from "./ORGate.js";
-
-
 import Grid from "./Grid.js";
 
 const canvas = document.querySelector("#canvas");
@@ -11,7 +8,7 @@ drawCircuit();
 function drawCircuit() {
   const circuit = parseGates();
   const grid = new Grid(circuit.inputs.length);
-  drawGrid({ ctx, grid });
+  drawGrid(ctx, grid);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   grid.draw(ctx);
@@ -28,7 +25,9 @@ function addInputs(grid, inputs) {
 }
 
 function addGates(grid, gates) {
-  grid.addGate(gates[0])
+  grid.addGate(gates[0]);
+  grid.addGate(gates[1]);
+  grid.addGate(gates[2]);
   // gates.forEach(gate => {
   //   grid.addGate(gate);
   // });
@@ -41,7 +40,7 @@ function parseGates() {
   return circuit;
 }
 
-function drawGrid({ ctx, grid }) {
+function drawGrid(ctx, grid) {
   for (let i = 0; i < 6; i++) {
     for (let j = 0; j < 6; j++) {
       ctx.rect(
