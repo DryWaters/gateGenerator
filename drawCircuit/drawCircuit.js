@@ -8,7 +8,7 @@ drawCircuit();
 function drawCircuit() {
   const circuit = parseGates();
   const grid = new Grid(circuit.inputs.length);
-  drawGrid(ctx, grid);
+  // drawGrid(ctx, grid);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   grid.draw(ctx);

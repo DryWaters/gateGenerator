@@ -5,17 +5,17 @@ export default class ANDGate extends CircuitItem {
     super(x, y, 50, 25, name, value);
     this.inputLocation = [
       {
-        x: x,
-        y: y + this.height * 2 - 10
+        x: this.x,
+        y: this.y + this.height * 2 - 10
       },
       {
-        x: x,
-        y: y + this.height * 2 + 10
+        x: this.x,
+        y: this.y + this.height * 2 + 10
       }
     ];
     this.outputLocation = {
-      x: x + this.width,
-      y: y + this.height * 2
+      x: this.x + this.width,
+      y: this.y + this.height * 2
     };
   }
 
