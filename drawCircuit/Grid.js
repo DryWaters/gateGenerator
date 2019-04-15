@@ -3,14 +3,14 @@ export default class Grid {
       this.currentCol = 0;
       this.currentRow = 0;
       this.offset = 50;
-      this.items = [];
+      this.gates = [];
     }
   
-    addItem = function(item) {
-      this.items.push({
+    addGate = function(gate) {
+      this.gates.push({
         row: this.currentRow,
         col: this.currentRow,
-        item: item
+        gate: gate
       });
     };
   

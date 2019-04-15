@@ -13,6 +13,7 @@ drawGrid({ ctx, grid });
 drawInputs({ inputs: circuit.inputs, ctx, grid });
 console.log(circuit);
 drawGates({ gates: circuit.gates, ctx, grid });
+drawConnectors({ ctx, grid });
 
 function parseGates() {
   const circuit = {};
@@ -49,20 +50,67 @@ function drawInputs({ inputs, ctx, grid }) {
       input
     );
     inputValue.draw(ctx);
-    grid.addItem();
+    grid.addGate(inputValue);
     grid.currentRow++;
   });
-  grid.currentCol = 1;
+  grid.currentCol = 0;
   grid.currentRow = 0;
-
 }
 
 function drawGates({ gates, ctx, grid }) {
-  // grid.currentRow++;
+  grid.currentCol++;
   const and = new ANDGate(
     grid.getX(grid.currentCol),
     grid.getY(grid.currentRow),
-    'y1'
+    "y1",
+    "x"
   );
+  grid.addGate(and);
   and.draw(ctx);
+}
+
+function drawConnectors({ ctx, grid }) {
+  console.log(grid.gates);
+  if (grid.gates[0].gate.value === "0") {
+    ctx.strokeStyle = "#000";
+  } else {
+    ctx.strokeStyle = "red";
+  }
+  ctx.moveTo(
+    grid.gates[0].gate.outputLocation.x,
+    grid.gates[0].gate.outputLocation.y
+  );
+  let halfWayX =
+    (grid.gates[2].gate.inputLocation[0].x +
+      grid.gates[0].gate.outputLocation.x) /
+    2;
+  ctx.lineTo(halfWayX, grid.gates[0].gate.outputLocation.y);
+  ctx.lineTo(halfWayX, grid.gates[2].gate.inputLocation[0].y);
+  ctx.lineTo(
+    grid.gates[2].gate.inputLocation[0].x,
+    grid.gates[2].gate.inputLocation[0].y
+  );
+  ctx.stroke();
+
+  if (grid.gates[1].gate.value === "0") {
+    ctx.strokeStyle = "#000";
+  } else {
+    ctx.strokeStyle = "red";
+  }
+  ctx.moveTo(
+    grid.gates[1].gate.outputLocation.x,
+    grid.gates[1].gate.outputLocation.y
+  );
+
+  halfWayX =
+    (grid.gates[2].gate.inputLocation[1].x +
+      grid.gates[1].gate.outputLocation.x) /
+    2;
+  ctx.lineTo(halfWayX, grid.gates[1].gate.outputLocation.y);
+  ctx.lineTo(halfWayX, grid.gates[2].gate.inputLocation[1].y);
+  ctx.lineTo(
+    grid.gates[2].gate.inputLocation[1].x,
+    grid.gates[2].gate.inputLocation[1].y
+  );
+  ctx.stroke();
 }
