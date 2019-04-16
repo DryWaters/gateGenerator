@@ -12,10 +12,7 @@ function drawCircuit() {
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   grid.draw(ctx);
-  // drawInputs({ inputs: circuit.inputs, ctx, grid });
-  // console.log(circuit);
-  // drawGates({ gates: circuit.gates, ctx, grid });
-  // drawConnectors({ ctx, grid });
+  grid.drawConnections(ctx);
 }
 
 function addInputs(grid, inputs) {
@@ -55,49 +52,4 @@ function drawGrid(ctx, grid) {
 
   grid.currentCol = 0;
   grid.currentRow = 0;
-}
-
-function drawConnectors({ ctx, grid }) {
-  if (grid.gates[0].gate.value === "0") {
-    ctx.strokeStyle = "#000";
-  } else {
-    ctx.strokeStyle = "red";
-  }
-  ctx.moveTo(
-    grid.gates[0].gate.outputLocation.x,
-    grid.gates[0].gate.outputLocation.y
-  );
-  let halfWayX =
-    (grid.gates[2].gate.inputLocation[0].x +
-      grid.gates[0].gate.outputLocation.x) /
-    2;
-  ctx.lineTo(halfWayX, grid.gates[0].gate.outputLocation.y);
-  ctx.lineTo(halfWayX, grid.gates[2].gate.inputLocation[0].y);
-  ctx.lineTo(
-    grid.gates[2].gate.inputLocation[0].x,
-    grid.gates[2].gate.inputLocation[0].y
-  );
-  ctx.stroke();
-
-  if (grid.gates[1].gate.value === "0") {
-    ctx.strokeStyle = "#000";
-  } else {
-    ctx.strokeStyle = "red";
-  }
-  ctx.moveTo(
-    grid.gates[1].gate.outputLocation.x,
-    grid.gates[1].gate.outputLocation.y
-  );
-
-  halfWayX =
-    (grid.gates[2].gate.inputLocation[1].x +
-      grid.gates[1].gate.outputLocation.x) /
-    2;
-  ctx.lineTo(halfWayX, grid.gates[1].gate.outputLocation.y);
-  ctx.lineTo(halfWayX, grid.gates[2].gate.inputLocation[1].y);
-  ctx.lineTo(
-    grid.gates[2].gate.inputLocation[1].x,
-    grid.gates[2].gate.inputLocation[1].y
-  );
-  ctx.stroke();
 }

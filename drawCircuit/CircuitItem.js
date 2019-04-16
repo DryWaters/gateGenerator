@@ -10,4 +10,5 @@ export default class CircuitItem {
   }
 
   draw(ctx) {}
+  drawConnection(x, y, ctx) {}
 }

@@ -1,8 +1,9 @@
 import CircuitItem from "./CircuitItem.js";
 
 export default class NOTGate extends CircuitItem {
-  constructor(x, y, name, value) {
+  constructor(x, y, name, value, operands) {
     super(x, y, 50, 25, name, value);
+    this.operands = operands;
     this.inputLocation = {
       x: x,
       y: y + this.height * 2
@@ -54,5 +55,17 @@ export default class NOTGate extends CircuitItem {
     ctx.fillStyle = "#000";
     ctx.font = "24px serif";
     ctx.fillText(this.name, this.x + 5, this.y + this.height * 2 + 5);
+  }
+
+  drawConnections({ x, y, value, ctx }) {
+    if (value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.inputLocation.x, this.inputLocation.y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
   }
 }

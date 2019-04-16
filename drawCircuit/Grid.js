@@ -28,18 +28,12 @@ export default class Grid {
       gridLocation: {
         row: this.currentRow++,
         col: 0
-      }
+      },
+      outputLocation: input.outputLocation
     });
   };
 
   addGate = function(gateDefinition) {
-    // parse the gate information
-    // parsing the gate definition to find out which
-    // two inputs are used for that gate
-    // choose the row that has the longest row to add
-    // figure out which gate to create
-    // value needs to be generated depending on gate type
-
     const parsedGate = this.parseGateDefinintion(gateDefinition);
 
     switch (parsedGate.type) {
@@ -48,7 +42,8 @@ export default class Grid {
           this.getX(this.gates[parsedGate.correctRow].length),
           this.getY(parsedGate.correctRow),
           parsedGate.name,
-          parsedGate.value
+          parsedGate.value,
+          parsedGate.operands
         );
         this.gates[parsedGate.correctRow].push(gate);
         this.gateLookup.set(parsedGate.originalName, {
@@ -56,7 +51,8 @@ export default class Grid {
           gridLocation: {
             row: parsedGate.correctRow,
             col: this.gates[parsedGate.correctRow].length
-          }
+          },
+          outputLocation: gate.outputLocation
         });
         break;
       }
@@ -65,7 +61,8 @@ export default class Grid {
           this.getX(this.gates[parsedGate.correctRow].length),
           this.getY(parsedGate.correctRow),
           parsedGate.name,
-          parsedGate.value
+          parsedGate.value,
+          parsedGate.operands
         );
         this.gates[parsedGate.correctRow].push(gate);
         this.gateLookup.set(parsedGate.originalName, {
@@ -73,7 +70,8 @@ export default class Grid {
           gridLocation: {
             row: parsedGate.correctRow,
             col: this.gates[parsedGate.correctRow].length
-          }
+          },
+          outputLocation: gate.outputLocation
         });
         break;
       }
@@ -82,7 +80,8 @@ export default class Grid {
           this.getX(this.gates[parsedGate.correctRow].length),
           this.getY(parsedGate.correctRow),
           parsedGate.name,
-          parsedGate.value
+          parsedGate.value,
+          parsedGate.operands
         );
         this.gates[parsedGate.correctRow].push(gate);
         this.gateLookup.set(parsedGate.originalName, {
@@ -90,7 +89,8 @@ export default class Grid {
           gridLocation: {
             row: parsedGate.correctRow,
             col: this.gates[parsedGate.correctRow].length
-          }
+          },
+          outputLocation: gate.outputLocation
         });
         break;
       }
@@ -98,66 +98,55 @@ export default class Grid {
         console.log("Bad gate definition");
       }
     }
-
-    // name is assigned from the next Y name
-
-    // x and y is assigned by the grid using the correct row, col
-
-    // assign it the next Y name, value, and correct row, col
-
-    // const correctRow = findCorrectRow(gate);
-
-    // console.log(this.gates);
   };
-
-  getCorrectRow(gateDefinition) {}
 
   parseGateDefinintion(gateDefinition) {
     let gate = {};
     switch (gateDefinition[0]) {
       case "A": {
         const operands = gateDefinition.substring(1).split("#");
-        operands[0] = this.gateLookup.get(operands[0]);
-        operands[1] = this.gateLookup.get(operands[1]);
+        const op1 = this.gateLookup.get(operands[0]);
+        const op2 = this.gateLookup.get(operands[1]);
         gate = {
           type: gateDefinition[0],
           originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
-          value: operands[0].value && operands[1].value,
+          value: op1.value && op2.value,
           operands,
           correctRow:
-            operands[0].gridLocation.col > operands[1].gridLocation.col
-              ? operands[0].gridLocation.row
-              : operands[1].gridLocation.row
+            op1.gridLocation.col > op2.gridLocation.col
+              ? op1.gridLocation.row
+              : op2.gridLocation.row
         };
         break;
       }
       case "O": {
         const operands = gateDefinition.substring(1).split("#");
-        operands[0] = this.gateLookup.get(operands[0]);
-        operands[1] = this.gateLookup.get(operands[1]);
+        const op1 = this.gateLookup.get(operands[0]);
+        const op2 = this.gateLookup.get(operands[1]);
         gate = {
           type: gateDefinition[0],
           originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
-          value: operands[0].value || operands[1].value,
+          value: op1.value || op2.value,
           operands,
           correctRow:
-            operands[0].gridLocation.col > operands[1].gridLocation.col
-              ? operands[0].gridLocation.row
-              : operands[1].gridLocation.row
+            op1.gridLocation.col > op2.gridLocation.col
+              ? op1.gridLocation.row
+              : op2.gridLocation.row
         };
         break;
       }
       case "N": {
-        const operand = this.gateLookup.get(gateDefinition.substring(1));
+        const operand = gateDefinition.substring(1);
+        const op1 = this.gateLookup.get(operand);
         gate = {
           type: gateDefinition[0],
           originalName: "y".repeat(this.currentYValue),
           name: "y" + this.currentYValue++,
-          value: !operand.value,
+          value: !op1.value,
           operands: [operand],
-          correctRow: operand.gridLocation.row
+          correctRow: op1.gridLocation.row
         };
         break;
       }
@@ -180,6 +169,41 @@ export default class Grid {
     for (let i = 0; i < this.gates.length; i++) {
       for (let j = 0; j < this.gates[i].length; j++) {
         this.gates[i][j].draw(ctx);
+      }
+    }
+  }
+
+  drawConnections(ctx) {
+    for (let i = 0; i < this.gates.length; i++) {
+      for (let j = 0; j < this.gates[i].length; j++) {
+        if (this.gates[i][j].operands) {
+          if (this.gates[i][j] instanceof NOTGate) {
+            const op1 = this.gateLookup.get(this.gates[i][j].operands[0]);
+            this.gates[i][j].drawConnections({
+              x: op1.outputLocation.x,
+              y: op1.outputLocation.y,
+              value: op1.value,
+              ctx
+            });
+          } else {
+            const op1 = this.gateLookup.get(this.gates[i][j].operands[0]);
+            const op2 = this.gateLookup.get(this.gates[i][j].operands[1]);
+            
+            this.gates[i][j].drawConnections({
+              gate1: {
+                x: op1.outputLocation.x,
+                y: op1.outputLocation.y,
+                value: op1.value
+              },
+              gate2: {
+                x: op2.outputLocation.x,
+                y: op2.outputLocation.y,
+                value: op2.value
+              },
+              ctx
+            });
+          }
+        }
       }
     }
   }

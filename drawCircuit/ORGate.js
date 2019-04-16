@@ -1,8 +1,9 @@
 import CircuitItem from "./CircuitItem.js";
 
 export default class ORGate extends CircuitItem {
-  constructor(x, y, name, value) {
+  constructor(x, y, name, value, operands) {
     super(x, y, 65, 25, name, value);
+    this.operands = operands;
     this.inputLocation = [
       {
         x: this.x + 20,
@@ -74,5 +75,36 @@ export default class ORGate extends CircuitItem {
     ctx.fillStyle = "#000";
     ctx.font = "24px serif";
     ctx.fillText(this.name, this.x + 25, this.y + this.height * 2 + 5);
+  }
+
+  drawConnections({ gate1, gate2, ctx }) {
+    let topGate, bottomGate;
+    if (gate1.y < gate2.y) {
+      topGate = gate1;
+      bottomGate = gate2;
+    } else {
+      topGate = gate2;
+      bottomGate = gate1;
+    }
+
+    if (topGate.value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.inputLocation[0].x, this.inputLocation[0].y);
+    ctx.lineTo(topGate.x, topGate.y);
+    ctx.stroke();
+
+    if (bottomGate.value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+    ctx.beginPath();
+    ctx.moveTo(this.inputLocation[1].x, this.inputLocation[1].y);
+    ctx.lineTo(bottomGate.x, bottomGate.y);
+    ctx.stroke();
   }
 }
