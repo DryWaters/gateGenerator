@@ -177,7 +177,10 @@ export default class Grid {
     for (let i = 0; i < this.gates.length; i++) {
       for (let j = 0; j < this.gates[i].length; j++) {
         if (this.gates[i][j].operands) {
-          if (this.gates[i][j] instanceof NOTGate) {
+          if (
+            this.gates[i][j] instanceof NOTGate ||
+            this.gates[i][j] instanceof Input
+          ) {
             const op1 = this.gateLookup.get(this.gates[i][j].operands[0]);
             this.gates[i][j].drawConnections({
               x: op1.outputLocation.x,
@@ -206,5 +209,25 @@ export default class Grid {
         }
       }
     }
+  }
+
+  addFinalState() {
+    const finalGate = this.gateLookup.get("y".repeat(this.currentYValue - 1));
+    const input = new Input(
+      this.getX(finalGate.gridLocation.col),
+      this.getY(finalGate.gridLocation.row),
+      "final",
+      finalGate.value
+    );
+    input.operands = ["y".repeat(this.currentYValue - 1)];
+    this.gates[finalGate.gridLocation.row].push(input);
+    this.gateLookup.set(input.name, {
+      value: finalGate.value,
+      gridLocation: {
+        row: finalGate.gridLocation.row,
+        col: finalGate.gridLocation.col
+      },
+      outputLocation: input.outputLocation
+    });
   }
 }
