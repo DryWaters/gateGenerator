@@ -11,7 +11,8 @@ try {
   if (
     arguments.length > 1 ||
     arguments.length === 0 ||
-    isNaN(Number(arguments[0]))
+    isNaN(Number(arguments[0])) ||
+    Number(arguments[0] < 2)
   ) {
     throw new Error("Need 1 argument that represents the number of inputs");
   }
