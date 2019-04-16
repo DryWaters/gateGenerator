@@ -28,7 +28,6 @@ export default class ANDGate extends CircuitItem {
       ctx.strokeStyle = "#000";
     }
     ctx.fillStyle = "#FFF";
-    ctx.strokeStyle = "#000";
   
     ctx.beginPath();
     ctx.ellipse(

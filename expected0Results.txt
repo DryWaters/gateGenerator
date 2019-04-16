@@ -1,0 +1,4 @@
+01Ox#xNxxOyy#y
+00Oxx#xxAx#y
+01Oxx#xxAx#y
+10Oxx#xxAx#y

@@ -1,1 +1,1 @@
-circuitData = '00Ax#xAy#yOxx#xxOyy#yyAyyyy#yyy';
+circuitData = ["11Ox#xNxxOyy#y","11Oxx#xxAx#y"]

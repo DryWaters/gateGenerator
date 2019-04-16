@@ -1,0 +1,24 @@
+{
+  "name": "gate-generator",
+  "version": "1.0.0",
+  "description": "Generates random truth circuit using AND/OR/NOT gates (for testing CS154).\r It will output all values from the truth table for the given design to \r \"expected0Results.txt\" and \"expected1Results.txt\"\r that can be loaded into JFLAP.",
+  "main": "circuitData.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node generator.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DryWaters/gateGenerator.git"
+  },
+  "keywords": [],
+  "author": "Daniel Waters <danwater1@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DryWaters/gateGenerator/issues"
+  },
+  "homepage": "https://github.com/DryWaters/gateGenerator#readme",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  }
+}

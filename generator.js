@@ -1,6 +1,8 @@
 const gates = require("./gates");
 const truthTable = require("./truthTable");
-const inputs = [];
+const fs = require("fs");
+const liveServer =  require('live-server');
+let inputs = [];
 let currentYValue = 1;
 let outputString = "";
 
@@ -9,19 +11,17 @@ let outputString = "";
 const arguments = process.argv.slice(2);
 try {
   if (
-    arguments.length > 1 ||
-    arguments.length === 0 ||
+    arguments.length < 2 ||
     isNaN(Number(arguments[0])) ||
+    isNaN(Number(arguments[1])) ||
     Number(arguments[0] < 2)
   ) {
-    throw new Error("Need 1 argument that represents the number of inputs");
+    console.log('Need 2 arguments, node generator #inputs #numCircuits')
+    throw new Error("Need 2 arguments, node generator #inputs #numCircuits");
   }
 } catch (err) {
   process.exit();
 }
-
-// create input objects for the given inputs
-createInitialInputs(arguments[0]);
 
 function createInitialInputs(value) {
   for (let i = 1; i <= value; i++) {
@@ -117,12 +117,40 @@ function addGateToOutput(gate, pickedInputs) {
   }
 }
 
-while (hasMoreInputs()) {
-  const gate = pickRandomGate();
-  const pickedInputs = pickRandomInputs(gate);
-  addGateToOutput(gate, pickedInputs);
-  const newValue = calculateGate(gate, pickedInputs);
-  addNewInput(newValue);
+function deleteOldCircuitData() {
+  fs.unlink("./expected0results.txt", err => {
+    if (err) console.log("expected0results.txt does not exist yet");
+  });
+
+  fs.unlink("./expected1results.txt", err => {
+    if (err) console.log("expected1results.txt does not exist yet");
+  });
+
+  fs.unlink("./allCircuits.txt", err => {
+    if (err) console.log("allCircuits.txt does not exist yet");
+  });
+
+  fs.unlink("./circuitData.js", err => {
+    if (err) console.log("circuitData.js does not exist yet");
+  });
 }
 
-truthTable(outputString);
+deleteOldCircuitData();
+
+for (let i = 0; i < arguments[1]; i++) {
+  inputs = [];
+  currentYValue = 1;
+  outputString = "";
+  createInitialInputs(arguments[0]);
+  while (hasMoreInputs()) {
+    const gate = pickRandomGate();
+    const pickedInputs = pickRandomInputs(gate);
+    addGateToOutput(gate, pickedInputs);
+    const newValue = calculateGate(gate, pickedInputs);
+    addNewInput(newValue);
+  }
+  truthTable.calculateTruthtables(outputString);
+}
+
+truthTable.writeJS();
+liveServer.start();

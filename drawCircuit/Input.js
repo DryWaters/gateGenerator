@@ -47,17 +47,19 @@ export default class Input extends CircuitItem {
       ctx.fill();
     }
 
-    // Draw connector endpoints
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.arc(
-      this.outputLocation.x,
-      this.outputLocation.y,
-      this.CONNECTOR_SIZE,
-      0,
-      2 * Math.PI
-    );
-    ctx.fill();
+    if (this.name !== "final") {
+      // Draw connector endpoints
+      ctx.fillStyle = "red";
+      ctx.beginPath();
+      ctx.arc(
+        this.outputLocation.x,
+        this.outputLocation.y,
+        this.CONNECTOR_SIZE,
+        0,
+        2 * Math.PI
+      );
+      ctx.fill();
+    }
   }
 
   drawConnections({ x, y, value, ctx }) {

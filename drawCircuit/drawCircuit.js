@@ -2,16 +2,30 @@ import Grid from "./Grid.js";
 
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
+const displayGrid = document.querySelector("#show-grid");
+let currentCircuit = 1;
+
+displayGrid.addEventListener("change", e => drawCircuit(e.target.checked));
+
+readCircuitData();
 
 drawCircuit();
 
-function drawCircuit() {
+function readCircuitData() {
+  console.log(circuitData.length);
+}
+
+function selectCircuit() {}
+
+function drawCircuit(gridOn) {
   const circuit = parseGates();
   const grid = new Grid(circuit.inputs.length);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   const circuitMax = sizeCanvas(grid);
-  drawGrid(grid, circuitMax, ctx);
+  if (gridOn) {
+    drawGrid(grid, circuitMax, ctx);
+  }
   grid.drawConnections(ctx);
   grid.draw(ctx);
 }
@@ -42,8 +56,8 @@ function addGates(grid, gates) {
 
 function parseGates() {
   const circuit = {};
-  circuit.inputs = circuitData.replace(/[^0-1]/g, "").split("");
-  circuit.gates = circuitData.replace(/[0-1]/g, "").split(/(?=[NOA])/);
+  circuit.inputs = circuitData[currentCircuit].replace(/[^0-1]/g, "").split("");
+  circuit.gates = circuitData[currentCircuit].replace(/[0-1]/g, "").split(/(?=[NOA])/);
   return circuit;
 }
 

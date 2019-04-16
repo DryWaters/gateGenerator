@@ -31,8 +31,8 @@ function calculateTruthtables(input) {
     currentValue++;
   }
 
-  outputResults(expected0Values, expected1Values);
-  writeResults(expected0Values, expected1Values);
+  // outputResults(expected0Values, expected1Values);
+  writeResults(expected0Values, expected1Values, input);
 }
 
 // create a map to lookup the operator given the symbol
@@ -106,39 +106,44 @@ function outputResults(expected0Values, expected1Values) {
   console.log(expected1Values.join("\n"));
 }
 
-function writeResults(expected0Values, expected1Values) {
-  fs.writeFile("./expected0Results.txt", expected0Values.join("\n"), function(
-    err
-  ) {
-    if (err) {
-      return console.log("Error writting 0 expected file");
-    }
-    console.log("Successfully wrote expected0results.txt");
-  });
-
-  fs.writeFile("./expected1Results.txt", expected1Values.join("\n"), function(
-    err
-  ) {
-    if (err) {
-      return console.log("Error writting 1 expected file");
-    }
-    console.log("Successfully wrote expected1results.txt");
-  });
-
-  let circuit;
-
-  if (expected0Values.length === 0) {
-    circuit = `circuitData = '${expected1Values[0]}';`;
-  } else {
-    circuit = `circuitData = '${expected0Values[0]}';`;
+function writeResults(expected0Values, expected1Values, input) {
+  try {
+    fs.writeFileSync(
+      "./expected0Results.txt",
+      expected0Values.join("\n") + "\n",
+      {
+        flag: "a"
+      }
+    );
+    fs.writeFileSync(
+      "./expected1Results.txt",
+      expected1Values.join("\n") + "\n",
+      {
+        flag: "a"
+      }
+    );
+    fs.writeFileSync("./allCircuits.txt", input + "\n", {
+      flag: "a"
+    });
+  } catch (err) {
+    console.log("Unable to write file");
   }
-
-  fs.writeFile("./circuitData.js", circuit, function(err) {
-    if (err) {
-      return console.log("Error writting circuit");
-    }
-    console.log("Successfully wrote circuit.js");
-  });
 }
 
-module.exports = calculateTruthtables;
+function writeJS() {
+  try {
+    const savedCircuits = fs.readFileSync("./allCircuits.txt", "utf-8");
+    const parsedCircuits = savedCircuits.split("\n");
+    parsedCircuits.pop(); // remove empty string at end
+    const circuitData = `circuitData = ` + JSON.stringify(parsedCircuits);
+    fs.writeFileSync("./circuitData.js", circuitData);
+
+  } catch (err) {
+    console.log("Unable to write JS file " + err);
+  }
+}
+
+module.exports = {
+  calculateTruthtables,
+  writeJS
+};
