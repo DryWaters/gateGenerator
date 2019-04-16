@@ -3,6 +3,10 @@ import CircuitItem from "./CircuitItem.js";
 export default class Input extends CircuitItem {
   constructor(x, y, name, value) {
     super(x, y, 50, 50, name, value);
+
+    // override randomness for inputs
+    this.x = x;
+    this.y = y;
     this.outputLocation = {
       x: this.x + this.width,
       y: this.y + this.height / 2

@@ -5,12 +5,12 @@ export default class NOTGate extends CircuitItem {
     super(x, y, 50, 25, name, value);
     this.operands = operands;
     this.inputLocation = {
-      x: x,
-      y: y + this.height * 2
+      x: this.x,
+      y: this.y + this.height * 2
     };
     this.outputLocation = {
-      x: x + this.width + 5,
-      y: y + this.height * 2
+      x: this.x + this.width + 5,
+      y: this.y + this.height * 2
     };
   }
 

@@ -10,17 +10,21 @@ function drawCircuit() {
   const grid = new Grid(circuit.inputs.length);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
-  sizeCanvas(grid);
-  drawGrid(ctx, grid);
+  const circuitMax = sizeCanvas(grid);
+  drawGrid(grid, circuitMax, ctx);
   grid.drawConnections(ctx);
   grid.draw(ctx);
 }
 
 function sizeCanvas(grid) {
-  const maxWidth = grid.gates.reduce((prevMax, row) => row.length > prevMax ? row.length : prevMax, 0);
+  const maxWidth = grid.gates.reduce(
+    (prevMax, row) => (row.length > prevMax ? row.length : prevMax),
+    0
+  );
   const maxHeight = grid.gates.length;
   canvas.width = grid.offset + maxWidth * 100;
   canvas.height = grid.offset + maxHeight * 100;
+  return { col: maxHeight, row: maxWidth };
 }
 
 function addInputs(grid, inputs) {
@@ -42,20 +46,14 @@ function parseGates() {
   return circuit;
 }
 
-function drawGrid(ctx, grid) {
-  for (let i = 0; i < 7; i++) {
-    for (let j = 0; j < 9; j++) {
+function drawGrid(grid, { col, row }, ctx) {
+  for (let i = 0; i < row; i++) {
+    for (let j = 0; j < col; j++) {
       ctx.beginPath();
-      ctx.strokeStyle="#00FF00AA";
-      ctx.rect(
-        grid.getX(i),
-        grid.getY(j),
-        100,
-        100
-      );
+      ctx.strokeStyle = "#00FF00AA";
+      ctx.rect(grid.getX(i), grid.getY(j), 100, 100);
       ctx.stroke();
     }
-    
   }
 
   grid.currentCol = 0;

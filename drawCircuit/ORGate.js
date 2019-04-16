@@ -6,16 +6,16 @@ export default class ORGate extends CircuitItem {
     this.operands = operands;
     this.inputLocation = [
       {
-        x: this.x + 20,
+        x: this.x + 5,
         y: this.y + this.height * 2 - 10
       },
       {
-        x: this.x + 20,
+        x: this.x + 5,
         y: this.y + this.height * 2 + 10
       }
     ];
     this.outputLocation = {
-      x: this.x + this.width + 15,
+      x: this.x + this.width,
       y: this.y + this.height * 2 - 2
     };
   }
@@ -29,7 +29,7 @@ export default class ORGate extends CircuitItem {
     }
 
     ctx.beginPath();
-    const x = this.x + 15;
+    const x = this.x;
     const y = this.y + 25;
     ctx.moveTo(x, y);
     ctx.bezierCurveTo(x + 27, y, x + 51, y + 6, x + 65, y + 22);
@@ -71,7 +71,7 @@ export default class ORGate extends CircuitItem {
     // Draw label
     ctx.fillStyle = "#000";
     ctx.font = "24px serif";
-    ctx.fillText(this.name, this.x + 25, this.y + this.height * 2 + 5);
+    ctx.fillText(this.name, this.x + 12, this.y + this.height * 2 + 5);
   }
 
   drawConnections({ gate1, gate2, ctx }) {
