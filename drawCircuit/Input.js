@@ -19,6 +19,9 @@ export default class Input extends CircuitItem {
 
   draw(value, ctx) {
     // Draw input
+
+    // if input is 1 (true) outline
+    // it in red, else black
     if (value) {
       ctx.strokeStyle = "red";
     } else {
@@ -34,35 +37,44 @@ export default class Input extends CircuitItem {
     ctx.font = "48px serif";
     ctx.fillText(val, this.x + 13, this.y + 40);
 
+    // if this input is used as final output for
+    // circuit, draw the inputLocation but not
+    // the outputlocation as there will not be
+    // anything after this input
     if (this.name === "final") {
+      // Draw input connector endpoints
       ctx.fillStyle = "blue";
       ctx.beginPath();
       ctx.arc(
         this.inputLocation.x,
         this.inputLocation.y,
         this.CONNECTOR_SIZE,
-        0,
-        2 * Math.PI
+        0, // starting location of arc in radians
+        2 * Math.PI // ending location of arc in radians
       );
       ctx.fill();
     }
 
     if (this.name !== "final") {
-      // Draw connector endpoints
+      // Draw output connector endpoints
       ctx.fillStyle = "red";
       ctx.beginPath();
       ctx.arc(
         this.outputLocation.x,
         this.outputLocation.y,
         this.CONNECTOR_SIZE,
-        0,
-        2 * Math.PI
+        0, // starting location of arc in radians
+        2 * Math.PI // ending location of arc in radians
       );
       ctx.fill();
     }
   }
 
+  // This method will only be called on the final input
+  // as other inputs are the first items in the circuit
   drawConnections({ x, y, value, ctx }) {
+    // if gate that is feeding into this one
+    // is 1 (true), color it red
     if (value) {
       ctx.strokeStyle = "red";
     } else {

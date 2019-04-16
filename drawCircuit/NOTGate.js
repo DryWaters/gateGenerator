@@ -15,6 +15,10 @@ export default class NOTGate extends CircuitItem {
   }
 
   draw(value, ctx) {
+    // Draw gate
+
+    // if gate is 1 (true) outline
+    // it in red, else black
     if (value) {
       ctx.strokeStyle = "red";
     } else {
@@ -30,15 +34,18 @@ export default class NOTGate extends CircuitItem {
     ctx.fill();
     ctx.stroke();
 
+    // draw end ball connector on NOT gate
+    const BALL_SIZE = 5;
     ctx.beginPath();
     ctx.arc(
       this.x + this.width + 5,
       this.y + this.height * 2,
-      5,
-      0,
-      2 * Math.PI
+      BALL_SIZE,
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
     );
     ctx.stroke();
+    ctx.fill();
 
     //Draw input connectors
     ctx.fillStyle = "blue";
@@ -47,8 +54,8 @@ export default class NOTGate extends CircuitItem {
       this.inputLocation.x,
       this.inputLocation.y,
       this.CONNECTOR_SIZE,
-      0,
-      2 * Math.PI
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
     );
 
     ctx.fill();
@@ -56,7 +63,13 @@ export default class NOTGate extends CircuitItem {
     // Draw output connector
     ctx.fillStyle = "red";
     ctx.beginPath();
-    ctx.arc(this.outputLocation.x, this.outputLocation.y, 4, 0, 2 * Math.PI);
+    ctx.arc(
+      this.outputLocation.x,
+      this.outputLocation.y,
+      this.CONNECTOR_SIZE,
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
+    );
     ctx.fill();
 
     // Draw label
@@ -66,6 +79,8 @@ export default class NOTGate extends CircuitItem {
   }
 
   drawConnections({ x, y, value, ctx }) {
+    // if gate that is feeding into this one
+    // is 1 (true), color it red
     if (value) {
       ctx.strokeStyle = "red";
     } else {

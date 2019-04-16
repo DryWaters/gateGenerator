@@ -5,28 +5,37 @@ import ORGate from "./ORGate.js";
 
 export default class Grid {
   constructor(numInputs) {
-    this.currentCol = 0;
-    this.currentRow = 0;
+    this.rowIndex = 0;
+    // Offsets everything a little from the top/left of the screen
     this.offset = 50;
+
+    // Stores all gates/inputs for circuit for drawing
     this.gates = new Array(numInputs);
+
+    // used for quick lookup of which col/row/value
+    // a gate/input has, ex. xxx => {object values}
     this.gateLookup = new Map();
+
+    // Used to keep track of which x and y value was
+    // used last, for assigning names to gates/inputs
+    // ex. xxx    or     yyy
     this.currentYValue = 1;
     this.currentXValue = 1;
   }
 
   addInput = function(value) {
     const input = new Input(
-      this.getX(this.currentCol),
-      this.getY(this.currentRow),
+      this.getX(0),
+      this.getY(this.rowIndex),
       "x".repeat(this.currentXValue++),
       value === "0" ? false : true
     );
-    this.gates[this.currentRow] = [];
-    this.gates[this.currentRow].push(input);
+    this.gates[this.rowIndex] = [];
+    this.gates[this.rowIndex].push(input);
     this.gateLookup.set(input.name, {
       value: value === "0" ? false : true,
       gridLocation: {
-        row: this.currentRow++,
+        row: this.rowIndex++,
         col: 0
       },
       outputLocation: input.outputLocation
@@ -100,6 +109,12 @@ export default class Grid {
     }
   };
 
+  /* Returns an object representation of the gate string passed
+  // to it.  Including the name and which row it should be added to
+  //
+  // It always adds the gate to whichever is the longest row
+  // between the two gates that are feeding into it.  This is 
+  // to keep connection lines to go only backwards (no crossing) */
   parseGateDefinintion(gateDefinition) {
     let gate = {};
     switch (gateDefinition[0]) {
@@ -157,14 +172,19 @@ export default class Grid {
     return gate;
   }
 
+  // helper function that returns the correct X value
+  // in pixels if given a col number
   getX = function(col) {
     return col * 100 + this.offset;
   };
 
+  // helper function that returns the correct Y value
+  // in pixels if given a row number
   getY = function(row) {
     return row * 100 + this.offset;
   };
 
+  // draws all gates
   draw(ctx) {
     for (let i = 0; i < this.gates.length; i++) {
       for (let j = 0; j < this.gates[i].length; j++) {
@@ -173,6 +193,7 @@ export default class Grid {
     }
   }
 
+  // draws all connection lines between gates
   drawConnections(ctx) {
     for (let i = 0; i < this.gates.length; i++) {
       for (let j = 0; j < this.gates[i].length; j++) {

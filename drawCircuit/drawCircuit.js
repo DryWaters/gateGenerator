@@ -1,5 +1,6 @@
 import Grid from "./Grid.js";
 
+// Get references to document
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 const displayGrid = document.querySelector("#show-grid");
@@ -7,12 +8,18 @@ const circuitSelector = document.querySelector("#circuit-selector");
 const errorMessage = document.querySelector("#error-message");
 const inputs = document.querySelector("#inputs");
 
+// global variables for which circuit to draw
+// and if should draw the grid
 let currentCircuit = 1;
 let shouldDrawGrid = false;
+const GRID_COLOR = "#00FF00AA";
 
+// Attach all the event listeners
 displayGrid.addEventListener("change", e => {
   shouldDrawGrid = !shouldDrawGrid;
-  drawCircuit(inputs.value);
+  if (inputs.value) {
+    drawCircuit(inputs.value);
+  }
 });
 
 circuitSelector.addEventListener("change", e => {
@@ -34,6 +41,8 @@ inputs.addEventListener("keyup", e => {
   }
 });
 
+// read in all the circuit data from the JS file created by the
+// truthTable.js.  Create an option for every circuit.
 readCircuitData();
 
 function readCircuitData() {
@@ -52,6 +61,9 @@ function drawCircuit(inputs) {
   const grid = new Grid(circuit.inputs.length);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
+
+  // Find the longest row and number of inputs
+  // to resize the canvas to fit all gates
   const circuitMax = sizeCanvas(grid);
   if (shouldDrawGrid) {
     drawGrid(grid, circuitMax, ctx);
@@ -97,7 +109,7 @@ function drawGrid(grid, { col, row }, ctx) {
   for (let i = 0; i < row; i++) {
     for (let j = 0; j < col; j++) {
       ctx.beginPath();
-      ctx.strokeStyle = "#00FF00AA";
+      ctx.strokeStyle = GRID_COLOR;
       ctx.rect(grid.getX(i), grid.getY(j), 100, 100);
       ctx.stroke();
     }

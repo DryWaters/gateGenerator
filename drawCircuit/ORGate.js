@@ -22,12 +22,18 @@ export default class ORGate extends CircuitItem {
 
   draw(value, ctx) {
     // Draw actual gate
+
+    // if gate is 1 (true) outline
+    // it in red, else black
     if (value) {
       ctx.strokeStyle = "red";
     } else {
       ctx.strokeStyle = "#000";
     }
 
+    // Fancy bezierCurves for the OR gate
+    // Used http://canvimation.github.io/ to help generate the
+    // offset values
     ctx.beginPath();
     const x = this.x;
     const y = this.y + 25;
@@ -38,11 +44,9 @@ export default class ORGate extends CircuitItem {
     ctx.bezierCurveTo(x + 8, y + 18, x + 3, y + 6, x, y);
     ctx.closePath();
     ctx.stroke();
-
-    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fillStyle = "#fff";
     ctx.fill();
 
-    ctx.beginPath();
     // Draw input locations
     ctx.fillStyle = "blue";
     ctx.beginPath();
@@ -50,22 +54,28 @@ export default class ORGate extends CircuitItem {
       this.inputLocation[0].x,
       this.inputLocation[0].y,
       this.CONNECTOR_SIZE,
-      0,
-      2 * Math.PI
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
     );
     ctx.arc(
       this.inputLocation[1].x,
       this.inputLocation[1].y,
       this.CONNECTOR_SIZE,
-      0,
-      2 * Math.PI
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
     );
     ctx.fill();
 
     // Draw output location
     ctx.fillStyle = "red";
     ctx.beginPath();
-    ctx.arc(this.outputLocation.x, this.outputLocation.y, 4, 0, 2 * Math.PI);
+    ctx.arc(
+      this.outputLocation.x,
+      this.outputLocation.y,
+      this.CONNECTOR_SIZE,
+      0, // starting location of arc in radians
+      2 * Math.PI // ending location of arc in radians
+    );
     ctx.fill();
 
     // Draw label
@@ -75,6 +85,9 @@ export default class ORGate extends CircuitItem {
   }
 
   drawConnections({ gate1, gate2, ctx }) {
+    // Figure out which gate that feeds into this gate
+    // is above this one so that the lines do not
+    // cross when they connect
     let topGate, bottomGate;
     if (gate1.y < gate2.y) {
       topGate = gate1;
@@ -84,6 +97,8 @@ export default class ORGate extends CircuitItem {
       bottomGate = gate1;
     }
 
+    // if gate that is feeding into this one
+    // is 1 (true), color it red
     if (topGate.value) {
       ctx.strokeStyle = "red";
     } else {
@@ -97,6 +112,8 @@ export default class ORGate extends CircuitItem {
     ctx.lineTo(topGate.x, topGate.y);
     ctx.stroke();
 
+    // if gate that is feeding into this one
+    // is 1 (true), color it red
     if (bottomGate.value) {
       ctx.strokeStyle = "red";
     } else {
