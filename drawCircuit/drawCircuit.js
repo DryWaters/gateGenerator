@@ -10,7 +10,7 @@ const inputs = document.querySelector("#inputs");
 
 // global variables for which circuit to draw
 // and if should draw the grid
-let currentCircuit = 1;
+let currentCircuit = 0;
 let shouldDrawGrid = false;
 const GRID_COLOR = "#00FF00AA";
 
