@@ -14,12 +14,20 @@ export default class NOTGate extends CircuitItem {
     };
   }
 
-  draw(ctx) {
+  draw(value, ctx) {
+    if (value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+    ctx.fillStyle = "#FFF";
     ctx.beginPath();
     ctx.moveTo(this.x, this.y + this.height);
     ctx.lineTo(this.x + this.width, this.y + this.height * 2);
     ctx.lineTo(this.x, this.y + this.height * 3);
     ctx.lineTo(this.x, this.y + this.height);
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
 
     ctx.beginPath();
@@ -63,8 +71,11 @@ export default class NOTGate extends CircuitItem {
     } else {
       ctx.strokeStyle = "#000";
     }
+    let halfway = (this.inputLocation.x + x) / 2;
     ctx.beginPath();
     ctx.moveTo(this.inputLocation.x, this.inputLocation.y);
+    ctx.lineTo(halfway, this.inputLocation.y);
+    ctx.lineTo(halfway, y);
     ctx.lineTo(x, y);
     ctx.stroke();
   }

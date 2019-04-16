@@ -168,7 +168,7 @@ export default class Grid {
   draw(ctx) {
     for (let i = 0; i < this.gates.length; i++) {
       for (let j = 0; j < this.gates[i].length; j++) {
-        this.gates[i][j].draw(ctx);
+        this.gates[i][j].draw(this.gates[i][j].value, ctx);
       }
     }
   }
@@ -188,7 +188,7 @@ export default class Grid {
           } else {
             const op1 = this.gateLookup.get(this.gates[i][j].operands[0]);
             const op2 = this.gateLookup.get(this.gates[i][j].operands[1]);
-            
+
             this.gates[i][j].drawConnections({
               gate1: {
                 x: op1.outputLocation.x,

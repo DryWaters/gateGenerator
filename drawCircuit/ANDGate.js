@@ -20,9 +20,16 @@ export default class ANDGate extends CircuitItem {
     };
   }
 
-  draw(ctx) {
+  draw(value, ctx) {
     // Draw gate
+    if (value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+    ctx.fillStyle = "#FFF";
     ctx.strokeStyle = "#000";
+  
     ctx.beginPath();
     ctx.ellipse(
       this.x,
@@ -34,6 +41,8 @@ export default class ANDGate extends CircuitItem {
       0.5 * Math.PI
     );
     ctx.lineTo(this.x, this.y + this.height);
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
 
     // Draw input connector
@@ -82,8 +91,11 @@ export default class ANDGate extends CircuitItem {
     } else {
       ctx.strokeStyle = "#000";
     }
+    let halfway = (this.inputLocation[0].x + topGate.x) / 2;
     ctx.beginPath();
     ctx.moveTo(this.inputLocation[0].x, this.inputLocation[0].y);
+    ctx.lineTo(halfway, this.inputLocation[0].y)
+    ctx.lineTo(halfway, topGate.y)
     ctx.lineTo(topGate.x, topGate.y);
     ctx.stroke();
 
@@ -92,8 +104,11 @@ export default class ANDGate extends CircuitItem {
     } else {
       ctx.strokeStyle = "#000";
     }
+    halfway = (this.inputLocation[1].x + bottomGate.x) / 2;
     ctx.beginPath();
     ctx.moveTo(this.inputLocation[1].x, this.inputLocation[1].y);
+    ctx.lineTo(halfway, this.inputLocation[1].y)
+    ctx.lineTo(halfway, bottomGate.y)
     ctx.lineTo(bottomGate.x, bottomGate.y);
     ctx.stroke();
   }

@@ -15,37 +15,34 @@ export default class ORGate extends CircuitItem {
       }
     ];
     this.outputLocation = {
-      x: this.x + this.width,
-      y: this.y + this.height * 2
+      x: this.x + this.width + 15,
+      y: this.y + this.height * 2 - 2
     };
   }
 
-  draw(ctx) {
+  draw(value, ctx) {
     // Draw actual gate
-    ctx.strokeStyle = "#000";
+    if (value) {
+      ctx.strokeStyle = "red";
+    } else {
+      ctx.strokeStyle = "#000";
+    }
+
     ctx.beginPath();
-    ctx.ellipse(
-      this.x,
-      this.y + this.height * 2,
-      this.width,
-      this.height,
-      0,
-      1.5 * Math.PI,
-      0.5 * Math.PI
-    );
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.ellipse(
-      this.x,
-      this.y + this.height * 2,
-      this.width / 3,
-      this.height,
-      0,
-      1.5 * Math.PI,
-      0.5 * Math.PI
-    );
+    const x = this.x + 15;
+    const y = this.y + 25;
+    ctx.moveTo(x, y);
+    ctx.bezierCurveTo(x + 27, y, x + 51, y + 6, x + 65, y + 22);
+    ctx.bezierCurveTo(x + 55, y + 40, x + 26, y + 48, x, y + 49);
+    ctx.bezierCurveTo(x + 3, y + 39, x + 10, y + 25, x + 10, y + 25);
+    ctx.bezierCurveTo(x + 8, y + 18, x + 3, y + 6, x, y);
+    ctx.closePath();
     ctx.stroke();
 
+    ctx.fillStyle = "rgba(255,255,255,1)";
+    ctx.fill();
+
+    ctx.beginPath();
     // Draw input locations
     ctx.fillStyle = "blue";
     ctx.beginPath();
@@ -92,8 +89,11 @@ export default class ORGate extends CircuitItem {
     } else {
       ctx.strokeStyle = "#000";
     }
+    let halfway = (this.inputLocation[0].x + topGate.x) / 2;
     ctx.beginPath();
     ctx.moveTo(this.inputLocation[0].x, this.inputLocation[0].y);
+    ctx.lineTo(halfway, this.inputLocation[0].y);
+    ctx.lineTo(halfway, topGate.y);
     ctx.lineTo(topGate.x, topGate.y);
     ctx.stroke();
 
@@ -102,8 +102,11 @@ export default class ORGate extends CircuitItem {
     } else {
       ctx.strokeStyle = "#000";
     }
+    halfway = (this.inputLocation[1].x + bottomGate.x) / 2;
     ctx.beginPath();
     ctx.moveTo(this.inputLocation[1].x, this.inputLocation[1].y);
+    ctx.lineTo(halfway, this.inputLocation[1].y);
+    ctx.lineTo(halfway, bottomGate.y);
     ctx.lineTo(bottomGate.x, bottomGate.y);
     ctx.stroke();
   }

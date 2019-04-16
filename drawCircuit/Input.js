@@ -9,7 +9,7 @@ export default class Input extends CircuitItem {
     };
   }
 
-  draw(ctx) {
+  draw(value, ctx) {
     // Draw input 
     ctx.beginPath();
     ctx.strokeStyle = "#000";
