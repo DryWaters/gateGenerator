@@ -8,6 +8,9 @@ function calculateTruthtables(input) {
   let currentValue = 0;
   const gateMap = createGateMap(gates);
   const numInputs = countNumInputs(input);
+
+  // Find the maximum int value by parsing a binary
+  // representation of the largest possible input length
   const maxValue = parseInt("1".repeat(numInputs), 2);
   const expected0Values = [];
   const expected1Values = [];
@@ -31,12 +34,13 @@ function calculateTruthtables(input) {
     currentValue++;
   }
 
+  // Uncomment if you want to see the output to the terminal
   // outputResults(expected0Values, expected1Values);
   writeResults(expected0Values, expected1Values, input);
 }
 
 // create a map to lookup the operator given the symbol
-// of the gate
+// of the gate from the external gates.js file
 function createGateMap(gates) {
   const gateMap = new Map();
   gates.forEach(gate => gateMap.set(gate.symbol, gate.operator));
@@ -45,6 +49,25 @@ function createGateMap(gates) {
 
 function countNumInputs(input) {
   return input.replace(/[^0-1]/g, "").length;
+}
+
+// create a map of the intial values for a given
+// x => binaryRepresentation of a given integer value[index]
+// example
+// x => '1
+// xx => '0'
+// xxx => '1'
+function createMapValues(value, numInputs) {
+  const binaryValues = createPaddedBinary(value, numInputs);
+  const map = new Map();
+  for (let i = 1; i <= numInputs; i++) {
+    map.set("x".repeat(i), Boolean(Number(binaryValues[i - 1])));
+  }
+  return map;
+}
+
+function createPaddedBinary(value, numInputs) {
+  return value.toString(2).padStart(numInputs, 0);
 }
 
 function stripLeadingInputValues(input) {
@@ -62,30 +85,18 @@ function createTokens(tokens) {
   }));
 }
 
-function createPaddedBinary(value, numInputs) {
-  return value.toString(2).padStart(numInputs, 0);
-}
-
-// create a map of the intial values for a given
-// x => binaryRepresentation of a given integer value[index]
-function createMapValues(value, numInputs) {
-  const binaryValues = createPaddedBinary(value, numInputs);
-  const map = new Map();
-  for (let i = 1; i <= numInputs; i++) {
-    map.set("x".repeat(i), Boolean(Number(binaryValues[i - 1])));
-  }
-  return map;
-}
-
 // evalutate the tokens and store the y values into the values map
 function calculateValues({ values, tokens, gateMap }) {
   tokens.forEach(token => {
+
+    // NOT gate = 1 operands
     if (token.operands.length === 1) {
       values.set(
         `${"y".repeat(currentYValue++)}`,
         eval(`${gateMap.get(token.operator)}${values.get(token.operands[0])}`)
       );
     } else {
+      // Must be AND/OR gate != 1 operands
       values.set(
         `${"y".repeat(currentYValue++)}`,
         eval(
@@ -130,6 +141,7 @@ function writeResults(expected0Values, expected1Values, input) {
   }
 }
 
+// Called by generator when all circuits have been built
 function writeJS() {
   try {
     const savedCircuits = fs.readFileSync("./allCircuits.txt", "utf-8");
@@ -137,7 +149,6 @@ function writeJS() {
     parsedCircuits.pop(); // remove empty string at end
     const circuitData = `circuitData = ` + JSON.stringify(parsedCircuits);
     fs.writeFileSync("./circuitData.js", circuitData);
-
   } catch (err) {
     console.log("Unable to write JS file " + err);
   }
