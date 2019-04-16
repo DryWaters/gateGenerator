@@ -6,8 +6,10 @@ let inputs = [];
 let currentYValue = 1;
 let outputString = "";
 
-// expected to have one argument with the
+// expected to have two arguments with the
 // number of inputs for the gates
+// arguments[0] = number of inputs
+// arguments[1] = number of circuits
 const arguments = process.argv.slice(2);
 try {
   if (
@@ -47,8 +49,10 @@ function pickRandomGate() {
   return gates[Math.floor(Math.random() * gates.length)];
 }
 
-// pick random inputs to use for a given gate
+// pick random input to use for a given gate
 function pickRandomInputs(gate) {
+
+  // remove any input that has already been used
   const availableIndices = inputs
     .map((input, index) => {
       if (input.numVisited < 1) return index;
@@ -86,6 +90,7 @@ function hasMoreInputs() {
   return numUnvisited > 1;
 }
 
+// Evaluate the gate to be used in the expected values
 function calculateGate(gate, pickedInputs) {
   let operation;
 
@@ -99,7 +104,7 @@ function calculateGate(gate, pickedInputs) {
   return eval(operation);
 }
 
-function addNewInput(value) {
+function addNewGate(value) {
   inputs.push({
     name: "y".repeat(currentYValue++),
     numVisited: 0,
@@ -117,6 +122,7 @@ function addGateToOutput(gate, pickedInputs) {
   }
 }
 
+// Delete old circuit data if exists
 function deleteOldCircuitData() {
   fs.unlink("./expected0results.txt", err => {
     if (err) console.log("expected0results.txt does not exist yet");
@@ -135,6 +141,7 @@ function deleteOldCircuitData() {
   });
 }
 
+// Start of program
 deleteOldCircuitData();
 
 for (let i = 0; i < arguments[1]; i++) {
@@ -147,10 +154,14 @@ for (let i = 0; i < arguments[1]; i++) {
     const pickedInputs = pickRandomInputs(gate);
     addGateToOutput(gate, pickedInputs);
     const newValue = calculateGate(gate, pickedInputs);
-    addNewInput(newValue);
+    addNewGate(newValue);
   }
+  // Create the output expected results file
   truthTable.calculateTruthtables(outputString);
 }
 
+// Grab all generated circuits and create a single
+// JS file that will be imported in the display
+// and start server
 truthTable.writeJS();
 liveServer.start();
