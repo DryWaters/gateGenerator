@@ -54,6 +54,10 @@ function readCircuitData() {
     fragment.appendChild(option);
   });
   circuitSelector.appendChild(fragment);
+  const expectedInputLen = circuitData[currentCircuit].replace(/[^0-1]/g, "")
+    .length;
+  inputs.value = "0".repeat(expectedInputLen);
+  drawCircuit(inputs.value);
 }
 
 function drawCircuit(inputs) {
