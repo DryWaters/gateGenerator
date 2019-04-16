@@ -3,27 +3,57 @@ import Grid from "./Grid.js";
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 const displayGrid = document.querySelector("#show-grid");
-let currentCircuit = 1;
+const circuitSelector = document.querySelector("#circuit-selector");
+const errorMessage = document.querySelector("#error-message");
+const inputs = document.querySelector("#inputs");
 
-displayGrid.addEventListener("change", e => drawCircuit(e.target.checked));
+let currentCircuit = 1;
+let shouldDrawGrid = false;
+
+displayGrid.addEventListener("change", e => {
+  shouldDrawGrid = !shouldDrawGrid;
+  drawCircuit(inputs.value);
+});
+
+circuitSelector.addEventListener("change", e => {
+  currentCircuit = e.target.value;
+  if (inputs.value) {
+    drawCircuit(inputs.value);
+  }
+});
+
+inputs.addEventListener("keyup", e => {
+  const expectedInputLen = circuitData[currentCircuit].replace(/[^0-1]/g, "")
+    .length;
+  const inputValues = inputs.value;
+  if (inputValues.match(/[^0-1]/g) || inputValues.length !== expectedInputLen) {
+    errorMessage.innerHTML = `Expecting ${expectedInputLen}:  0's and 1's`;
+  } else {
+    errorMessage.innerHTML = "";
+    drawCircuit(inputValues);
+  }
+});
 
 readCircuitData();
 
-drawCircuit();
-
 function readCircuitData() {
-  console.log(circuitData.length);
+  const fragment = document.createDocumentFragment();
+  circuitData.forEach((circuit, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.text = circuit;
+    fragment.appendChild(option);
+  });
+  circuitSelector.appendChild(fragment);
 }
 
-function selectCircuit() {}
-
-function drawCircuit(gridOn) {
-  const circuit = parseGates();
+function drawCircuit(inputs) {
+  const circuit = parseGates(inputs);
   const grid = new Grid(circuit.inputs.length);
   addInputs(grid, circuit.inputs);
   addGates(grid, circuit.gates);
   const circuitMax = sizeCanvas(grid);
-  if (gridOn) {
+  if (shouldDrawGrid) {
     drawGrid(grid, circuitMax, ctx);
   }
   grid.drawConnections(ctx);
@@ -54,10 +84,12 @@ function addGates(grid, gates) {
   grid.addFinalState();
 }
 
-function parseGates() {
+function parseGates(inputs) {
   const circuit = {};
-  circuit.inputs = circuitData[currentCircuit].replace(/[^0-1]/g, "").split("");
-  circuit.gates = circuitData[currentCircuit].replace(/[0-1]/g, "").split(/(?=[NOA])/);
+  circuit.inputs = inputs.split("");
+  circuit.gates = circuitData[currentCircuit]
+    .replace(/[0-1]/g, "")
+    .split(/(?=[NOA])/);
   return circuit;
 }
 
