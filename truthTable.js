@@ -8,14 +8,17 @@ function calculateTruthtables(input) {
   let currentValue = 0;
   const gateMap = createGateMap(gates);
   const numInputs = countNumInputs(input);
+  const MAX_NUMBER_TESTS = 20;
 
   // Find the maximum int value by parsing a binary
   // representation of the largest possible input length
   const maxValue = parseInt("1".repeat(numInputs), 2);
+  const tests = MAX_NUMBER_TESTS < maxValue ? MAX_NUMBER_TESTS : maxValue;
+
   const expected0Values = [];
   const expected1Values = [];
 
-  for (let i = 0; i <= maxValue; i++) {
+  for (let i = 0; i <= tests; i++) {
     const values = createMapValues(currentValue, numInputs);
     const strippedInput = stripLeadingInputValues(input);
     const parsedInput = parseInput(strippedInput);
@@ -88,7 +91,6 @@ function createTokens(tokens) {
 // evalutate the tokens and store the y values into the values map
 function calculateValues({ values, tokens, gateMap }) {
   tokens.forEach(token => {
-
     // NOT gate = 1 operands
     if (token.operands.length === 1) {
       values.set(
