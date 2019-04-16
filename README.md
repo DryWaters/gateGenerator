@@ -5,9 +5,13 @@ It will output all values from the truth table for the given design to
 that can be loaded into JFLAP.
 
 To run:
-node generator (number of inputs)
+1. First install packages (Live Server)
+```npm install```
 
-Example for 10 inputs use:
+2. Generate random circuits
+node generator #numInputs #numCircuits
+
+Example to generate 5 circuits with 10 inputs use:
 ```
-node generator 10
+node generator 10 5
 ```
