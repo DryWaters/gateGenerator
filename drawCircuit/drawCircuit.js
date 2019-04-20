@@ -101,7 +101,7 @@ function sizeCanvas(grid) {
     0
   );
   const maxHeight = grid.gates.length;
-  canvas.width = grid.offset + maxWidth * 100 + 500;
+  canvas.width = grid.offset + maxWidth * 100;
   canvas.height = grid.offset + maxHeight * 100;
   return { col: maxHeight, row: maxWidth };
 }
