@@ -4,41 +4,43 @@ import Grid from "./Grid.js";
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d");
 const displayGrid = document.querySelector("#show-grid");
+const userCircuit = document.querySelector("#user-circuit");
 const circuitSelector = document.querySelector("#circuit-selector");
 const errorMessage = document.querySelector("#error-message");
 const inputs = document.querySelector("#inputs");
 
 // global variables for which circuit to draw
 // and if should draw the grid
-let currentCircuit = 0;
+// circuitData = JS circuit data read in
+let currentCircuit;
 let shouldDrawGrid = false;
 const GRID_COLOR = "#00FF00AA";
+const MAX_LENGTH = 100;
 
 // Attach all the event listeners
 displayGrid.addEventListener("change", e => {
   shouldDrawGrid = !shouldDrawGrid;
-  if (inputs.value) {
-    drawCircuit(inputs.value);
-  }
+  drawIfValidInputs();
 });
 
 circuitSelector.addEventListener("change", e => {
   currentCircuit = e.target.value;
-  if (inputs.value) {
-    drawCircuit(inputs.value);
+  drawIfValidInputs();
+});
+
+userCircuit.addEventListener("change", e => {
+  currentCircuit = e.target.value;
+  const expectedInput = currentCircuit.replace(/[^0-1]/g, "");
+  inputs.value = expectedInput;
+  try {
+    drawIfValidInputs();
+  } catch (err) {
+    errorMessage.innerHTML = `Invalid circuit definition.  Check input string`;
   }
 });
 
 inputs.addEventListener("keyup", e => {
-  const expectedInputLen = circuitData[currentCircuit].replace(/[^0-1]/g, "")
-    .length;
-  const inputValues = inputs.value;
-  if (inputValues.match(/[^0-1]/g) || inputValues.length !== expectedInputLen) {
-    errorMessage.innerHTML = `Expecting ${expectedInputLen}:  0's and 1's`;
-  } else {
-    errorMessage.innerHTML = "";
-    drawCircuit(inputValues);
-  }
+  drawIfValidInputs();
 });
 
 // read in all the circuit data from the JS file created by the
@@ -47,15 +49,19 @@ readCircuitData();
 
 function readCircuitData() {
   const fragment = document.createDocumentFragment();
-  circuitData.forEach((circuit, index) => {
+  circuitData.forEach(circuit => {
     const option = document.createElement("option");
-    option.value = index;
-    option.text = circuit;
+    option.value = circuit;
+    if (circuit.length > MAX_LENGTH) {
+      option.text = circuit.substring(0, MAX_LENGTH);
+    } else {
+      option.text = circuit;
+    }
+    currentCircuit = circuit;
     fragment.appendChild(option);
   });
   circuitSelector.appendChild(fragment);
-  const expectedInputLen = circuitData[currentCircuit].replace(/[^0-1]/g, "")
-    .length;
+  const expectedInputLen = currentCircuit.replace(/[^0-1]/g, "").length;
   inputs.value = "0".repeat(expectedInputLen);
   drawCircuit(inputs.value);
 }
@@ -74,6 +80,19 @@ function drawCircuit(inputs) {
   }
   grid.drawConnections(ctx);
   grid.draw(ctx);
+}
+
+function drawIfValidInputs() {
+  const expectedInputLen = currentCircuit.replace(/[^0-1]/g, "").length;
+  const inputValues = inputs.value;
+  if (inputValues.match(/[^0-1]/g) || inputValues.length !== expectedInputLen) {
+    errorMessage.innerHTML = `Expected ${expectedInputLen}: 0's and 1's`;
+  } else if (currentCircuit.match(/[^01AONxy\#]/)) {
+    errorMessage.innerHTML = `Invalid circuit definition.  Check input string`;
+  } else {
+    errorMessage.innerHTML = "";
+    drawCircuit(inputs.value);
+  }
 }
 
 function sizeCanvas(grid) {
@@ -103,9 +122,7 @@ function addGates(grid, gates) {
 function parseGates(inputs) {
   const circuit = {};
   circuit.inputs = inputs.split("");
-  circuit.gates = circuitData[currentCircuit]
-    .replace(/[0-1]/g, "")
-    .split(/(?=[NOA])/);
+  circuit.gates = currentCircuit.replace(/[0-1]/g, "").split(/(?=[NOA])/);
   return circuit;
 }
 
